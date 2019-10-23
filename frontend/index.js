@@ -1,9 +1,14 @@
+var botui = new BotUI('my-botui-app');
+// ==================================== Global scoped BotUI ===================
+
+// ==================================== DOM Loaded ======================
 document.addEventListener('DOMContentLoaded', ()=> {
     renderHomePage()
     let botDiv = document.getElementById('my-botui-app')
     let botCard = document.querySelector('.card-deck')
     //define it here
 
+    // renders bot cards
     const renderBots = () => {
         botCard.innerHTML +=
         `
@@ -39,21 +44,20 @@ document.addEventListener('DOMContentLoaded', ()=> {
         </div>
         `
         }
-
+    // call back function for event listener
     const handleHomeClick = (event) => {
         botDiv.remove()
         renderBots()
     }
 
     
-
+    // event listener for home button click
     homeClick.addEventListener('click',  handleHomeClick)
     
 
 })
 
-var botui = new BotUI('my-botui-app');
-
+// ============== GETTING TO KNOW THE BASICS ========================
 // botui.message.add({
 //     delay: 500,
 //     loading: true,
@@ -220,6 +224,13 @@ function renderHomePage(){
     delay: 500,
     loading: true,
     content: 'Welcome to Smart-Chat 1.0. '
+// })
+// }).then( () => {
+//     botui.message.add({
+//         delay: 500,
+//         loading: true,
+//         content: ''
+//     })
 }).then( () => {
     botui.action.text({
         action: {
@@ -228,5 +239,5 @@ function renderHomePage(){
       });
 })
 }
-
+// finds home click
 let homeClick = document.querySelector('.nav-link')
