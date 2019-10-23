@@ -1,3 +1,8 @@
+var firebase = require('firebase');
+var firebaseui = require('firebaseui');
+// or using ES6 imports:
+import * as firebaseui from 'firebaseui'
+
 const functions = require("firebase-functions");
 const cors = require("cors")({ origin: true });
 const admin = require("firebase-admin");
@@ -64,3 +69,4 @@ exports.dialogflowWebhook = functions.https.onRequest(
     agent.handleRequest(intentMap);
   }
 );
+
