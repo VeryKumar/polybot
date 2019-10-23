@@ -4,8 +4,8 @@ const admin = require("firebase-admin");
 const serviceAccount = require("./service-account.json");
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://small-talk-ftbybf.firebaseio.com"
+  credential: admin.credential.cert(serviceAccount)
+  // databaseURL: "https://small-talk-ftbybf.firebaseio.com"
 });
 
 const { SessionsClient } = require("dialogflow");
@@ -31,8 +31,24 @@ const { WebhookClient } = require("dialogflow-fulfillment");
 exports.dialogflowWebhook = functions.https.onRequest(
   async (request, response) => {
     const agent = new WebhookClient({ request, response });
-
     console.log(JSON.stringify(request.body));
+
+    // Import Admin SDK
+    var admin = require("firebase-admin");
+
+    // Get a database reference to our blog
+    var db = admin.firestore();
+    console.log(agent.query);
+    console.log(request.body.queryResult.fulfillmentText);
+
+    let data = {
+      userMessage: agent.query,
+      botMessage: request.body.queryResult.fulfillmentText,
+      date: Date.now()
+    };
+    db.collection("messages")
+      .doc("ID")
+      .set(data);
 
     const result = request.body.queryResult;
     //these are responses that will be given if we have webook
