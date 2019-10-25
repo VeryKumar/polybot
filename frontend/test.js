@@ -1,62 +1,56 @@
-var botui = new BotUI('my-botui-app');
+// // var botui = new BotUI('my-botui-app');
+// // Import the appropriate class
+// const { WebhookClient } = require('dialogflow-fulfillment');
 
-document.addEventListener('DOMContentLoaded', ()=> {
-    
-    renderPage()
-    
-    let submitForm = document.querySelector('.botui-actions-select')
-    let loginContainer = document.querySelector('#login-page')
+//  //Create an instance
+// const agent = new WebhookClient({request: request, response: response});
 
-    function loginPage(){
-        loginContainer.innerHTML +=
-        `
-        
-        `
-    }
-    
-    function login(event) {
-        botui.remove()
-        
-
-    }
-    submitForm.addEventListener('submit', ())
+// var dialogflow = require('dialogflow').v2beta1;
+// const app = dialogflow("../functions/service-account.json");
 
 
+const dialogflowURL = 'https://us-central1-small-talk-ftbybf.cloudfunctions.net/dialogflowGateway'
+
+const dialogflow = require('dialogflow');
+const uuid = require('uuid');
+
+/**
+ * Send a query to the dialogflow agent, and return the query result.
+ * @param {string} projectId The project to be used
+ */
+    async function runSample(projectId = 'small-talk-ftbybf') {
+  // A unique identifier for the given session
+    const sessionId = uuid.v4();
+
+  // Create a new session
+  const sessionClient = new dialogflow.SessionsClient();
+  const sessionPath = sessionClient.sessionPath(projectId, sessionId);
+
+  // The text query request.
+  const request = {
+    session: sessionPath,
+    queryInput: {
+      text: {
+        // The query to send to the dialogflow agent
+        text: 'hello',
+        // The language used by the client (en-US)
+        languageCode: 'en-US',
+      },
+    },
+  };
 
 
-
-})
-
-
-
-
-function renderPage() {
-    botui.message.add({
-        delay:500,
-        loading: true,
-        content: 'Hello'
-    }).then(()=> {
-        botui.action.select({
-            action: {
-                placeholder : "What would you like to do?", 
-                value: 'Scroll down to look at what you can do.', // Selected value or selected object. Example: {value: "TR", text : "Türkçe" }
-                searchselect : true, // Default: true, false for standart dropdown
-                label : 'text', // dropdown label variable
-                options : [
-                                {value: "EN", text : "Continue Talking to Me." },
-                                {value: "ES", text : "Sign Up" },
-                                {value: "TR", text : "Login" }
-                                // {value: "DE", text : "" },
-                                // {value: "FR", text : "Français" },
-                                // {value: "IT", text : "Italiano" },
-                          ],
-                button: {
-                  icon: 'check',
-                  label: 'OK',
-                }
-              }
-          }).then(function (res) { // will be called when a button is clicked.
-            console.log(res.value); // will print "one" from 'value'
-          })
-    })
+  // Send request and log result
+  const responses = await sessionClient.detectIntent(request);
+  console.log('Detected intent');
+  const result = responses[0].queryResult;
+  console.log(`  Query: ${result.queryText}`);
+  console.log(`  Response: ${result.fulfillmentText}`);
+  if (result.intent) {
+    console.log(`  Intent: ${result.intent.displayName}`);
+  } else {
+    console.log(`  No intent matched.`);
+  }
 }
+
+// 
